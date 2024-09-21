@@ -1,28 +1,37 @@
 import {useFormik} from 'formik';
 import axios from 'axios';
+import * as yup from 'yup';
+
 export default function Login() {
+
+  const schema = yup.object({
+    email: yup.string().required().min(5).max(20).email(),
+    password: yup.string().required().min(5),
+  })
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     onSubmit: LoginUser,
-    validate: values => {
-        let errors = {}
+    // validate: values => {
+    //     let errors = {}
 
-        if(values.email.length < 10)
-            errors.email = "Email is required !"
-        if(values.password.length < 6)
-            errors.password = "Password is required !"
-        // if(values.email.indexOf('@') === -1)
-        //     errors.email = "Invalid email format !"
-        // if(values.password.indexOf('!') === -1)
-        //     errors.password = "Password must contain at least one special character (!)!"
-        // if(values.password.indexOf(' ')!== -1)
-        //     errors.password = "Password cannot contain spaces !"
+    //     if(values.email.length < 10)
+    //         errors.email = "Email is required !"
+    //     if(values.password.length < 6)
+    //         errors.password = "Password is required !"
+    //     // if(values.email.indexOf('@') === -1)
+    //     //     errors.email = "Invalid email format !"
+    //     // if(values.password.indexOf('!') === -1)
+    //     //     errors.password = "Password must contain at least one special character (!)!"
+    //     // if(values.password.indexOf(' ')!== -1)
+    //     //     errors.password = "Password cannot contain spaces !"
 
-        return errors
-    }
+    //     return errors
+    // }
+    validationSchema: schema
   });
   async function LoginUser() {
     const {data} = await axios.post(`https://ecommerce-node4.onrender.com/auth/signin`, formik.values);
